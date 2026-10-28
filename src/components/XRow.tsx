@@ -5,10 +5,11 @@ type Props = ViewProps & {
     width?: number,
     padding?: number,
     justifyContent? : ViewStyle["justifyContent"],
-    gap?: number
+    gap?: number, 
+    backgroundColor?:string
 }
 
-const XRow = ({ justifyContent = "space-between" , width, padding, style, children, ...rest }: Props) => {
+const XRow = ({ justifyContent = "space-between" , backgroundColor, width, padding, style, children, ...rest }: Props) => {
     return (
         <View
             {...rest}
@@ -16,7 +17,7 @@ const XRow = ({ justifyContent = "space-between" , width, padding, style, childr
                 [
                     styles.container,
                     {
-                        width, padding, justifyContent
+                        width, padding, justifyContent, backgroundColor
                     },
                     style
                 ]
