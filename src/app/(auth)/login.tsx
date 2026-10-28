@@ -1,15 +1,103 @@
+import XButton from '@/components/XButton'
+import XColumn from '@/components/XColumn'
+import XInput from '@/components/XInput'
+import XRow from '@/components/XRow'
 import XScreen from '@/components/XScreen'
+import XSpace from '@/components/XSpace'
 import XText from '@/components/XText'
-import { StyleSheet } from 'react-native'
+import { colors } from '@/themes/colors'
+import { useRouter } from 'expo-router'
+import { useState } from 'react'
+import { Image, StyleSheet } from 'react-native'
 
 const Login = () => {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleLogin = () => {
+    
+    console.log({ email, password })
+    router.replace("/(protected)/(tabs)/home")
+  }
+
   return (
-    <XScreen>
-      <XText fontSize={32} fontWeight={"900"}>Login</XText>
+    <XScreen style = { styles.container}>
+      <XRow gap={24} justifyContent='center'>
+        <Image
+          source={require('@/assets/images/logo.png')}
+          style={{ width: 50 }}
+          resizeMode='contain'
+        />
+        <Image
+          source={require('@/assets/images/text.png')}
+          style={{ width: 150 }}
+          resizeMode='contain'
+        />
+      </XRow>
+
+      <XColumn alignItems='flex-start'>
+        <XText fontSize={32} fontWeight='900'>
+          Bienvenue
+        </XText>
+        <XText fontSize={16} fontWeight='600' color={colors.textSecondary}>
+          Connectez-vous pour gérer votre présence
+        </XText>
+      </XColumn>
+
+      <XColumn gap={16}>
+        <XInput
+          icon='mail-outline'
+          placeholder='Adresse e-mail'
+          value={email}
+          onChangeText={setEmail}
+          keyboardType='email-address'
+          autoCapitalize='none'
+          autoComplete='email'
+        />
+        <XInput
+          icon='lock-closed-outline'
+          placeholder='Mot de passe'
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          autoCapitalize='none'
+          autoComplete='password'
+        />
+      </XColumn>
+
+      <XText
+        color={colors.primary}
+        textAlign='right'
+        onPress={() => router.navigate('/(auth)/forgot')}
+      >
+        Mot de passe oublié ?
+      </XText>
+
+      <XSpace height={24} />
+
+      <XButton width='100%' onPress={handleLogin}  >
+        <XText color={colors.background}>Se connecter</XText>
+      </XButton>
+
+      <XText
+        color={colors.primary}
+        textAlign='center'
+        onPress={() => router.navigate('/(auth)/register')}
+      >
+        Créer un compte
+      </XText>
     </XScreen>
   )
 }
 
 export default Login
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create(
+  {
+    container:{
+      justifyContent:"center",
+      //alignItems:"center"
+    }
+  }
+)

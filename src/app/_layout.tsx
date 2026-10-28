@@ -2,9 +2,11 @@ import { colors } from "@/themes/colors";
 import { Stack } from "expo-router";
 import { StatusBar } from "react-native";
 
+import { KeyboardProvider } from 'react-native-keyboard-controller';
+
 export default function RootLayout() {
   return (
-    <>
+    <KeyboardProvider>
     <StatusBar barStyle="dark-content" />
       <Stack 
         screenOptions={
@@ -21,6 +23,6 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)/forgot" />
         <Stack.Screen name="(protected)" />
       </Stack>
-    </>
+    </KeyboardProvider>
   )
 }

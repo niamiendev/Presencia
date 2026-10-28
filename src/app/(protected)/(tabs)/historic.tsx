@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import XScreen from '@/components/XScreen'
+import { StyleSheet, Text } from 'react-native'
 
 const HistoricScreen = () => {
   return (
-    <View>
+    <XScreen>
       <Text>HistoricScreen</Text>
-    </View>
+    </XScreen>
   )
 }
 

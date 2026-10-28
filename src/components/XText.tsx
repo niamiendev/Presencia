@@ -4,10 +4,12 @@ import { StyleSheet, Text, TextProps, TextStyle } from 'react-native'
 
 type Props = TextProps & {
     fontWeight? : TextStyle["fontWeight"],
-    fontSize?: number
+    textAlign? : TextStyle["textAlign"],
+    fontSize?: number,
+    color?:string
 }
 
-const XText = ({ fontSize, fontWeight, style, children, ...rest }: Props) => {
+const XText = ({ color = colors.text,textAlign, fontSize, fontWeight, style, children, ...rest }: Props) => {
     return (
         <Text
             {...rest}
@@ -15,7 +17,7 @@ const XText = ({ fontSize, fontWeight, style, children, ...rest }: Props) => {
                 [
                     styles.component,
                     {
-                       fontSize, fontWeight
+                       fontSize, fontWeight, color, textAlign
                     },
                     style
                 ]
@@ -30,6 +32,6 @@ export default XText
 
 const styles = StyleSheet.create({
     component: {
-        color: colors.text
+       
     }
 })

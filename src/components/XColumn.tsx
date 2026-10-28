@@ -8,7 +8,7 @@ type Props = ViewProps & {
     gap?: number
 }
 
-const XColumn = ({ alignItems = "center" , width, padding, style, children, ...rest }: Props) => {
+const XColumn = ({ gap, alignItems = "center" , width, padding, style, children, ...rest }: Props) => {
     return (
         <View
             {...rest}
@@ -16,7 +16,7 @@ const XColumn = ({ alignItems = "center" , width, padding, style, children, ...r
                 [
                     styles.container,
                     {
-                        width, padding, alignItems
+                        width, padding, alignItems, gap
                     },
                     style
                 ]

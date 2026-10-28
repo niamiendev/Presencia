@@ -1,13 +1,92 @@
-import { StyleSheet, Text, View } from 'react-native'
+import XButton from '@/components/XButton'
+import XColumn from '@/components/XColumn'
+import XInput from '@/components/XInput'
+import XRow from '@/components/XRow'
+import XScreen from '@/components/XScreen'
+import XSpace from '@/components/XSpace'
+import XText from '@/components/XText'
+import { colors } from '@/themes/colors'
+import { useRouter } from 'expo-router'
+import { useState } from 'react'
+import { Alert, Image, StyleSheet } from 'react-native'
 
-const Forgot = () => {
+const ForgotPassword = () => {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+
+  const handleSubmit = () => {
+    if (!email.trim()) {
+      Alert.alert('Erreur', 'Veuillez saisir votre adresse e-mail.')
+      return
+    }
+    // TODO: appeler votre API pour envoyer le lien de réinitialisation
+    console.log({ email })
+    Alert.alert(
+      'E-mail envoyé',
+      'Si un compte existe avec cette adresse, vous recevrez un lien de réinitialisation.'
+    )
+  }
+
   return (
-    <View>
-      <Text>Forgot</Text>
-    </View>
+    <XScreen style = { styles.container}>
+      <XRow gap={24} justifyContent='center'>
+        <Image
+          source={require('@/assets/images/logo.png')}
+          style={{ width: 50 }}
+          resizeMode='contain'
+        />
+        <Image
+          source={require('@/assets/images/text.png')}
+          style={{ width: 150 }}
+          resizeMode='contain'
+        />
+      </XRow>
+
+      <XColumn alignItems='flex-start'>
+        <XText fontSize={32} fontWeight='900'>
+          Mot de passe oublié ?
+        </XText>
+        <XText fontSize={16} fontWeight='600' color={colors.textSecondary}>
+          Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation
+        </XText>
+      </XColumn>
+
+      <XColumn>
+        <XInput
+          icon='mail-outline'
+          placeholder='Adresse e-mail'
+          value={email}
+          onChangeText={setEmail}
+          keyboardType='email-address'
+          autoCapitalize='none'
+          autoComplete='email'
+        />
+      </XColumn>
+
+      <XSpace height={24} />
+
+      <XButton onPress={handleSubmit}>
+        <XText color={colors.background}>Envoyer le lien</XText>
+      </XButton>
+
+      <XText
+        color={colors.primary}
+        textAlign='center'
+        onPress={() => router.back()}
+      >
+        Retour à la connexion
+      </XText>
+    </XScreen>
   )
 }
 
-export default Forgot
+export default ForgotPassword
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create(
+  {
+    container:{
+      justifyContent:"center",
+      //alignItems:"center"
+    }
+  }
+)
