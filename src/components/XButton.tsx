@@ -1,14 +1,14 @@
 
-import { colors } from '@/themes/colors'
+import { colors } from '@/themes/colors';
 import {
     StyleSheet,
     TouchableOpacity,
     type TouchableOpacityProps,
-} from 'react-native'
+} from 'react-native';
 
 type Props = TouchableOpacityProps & {
     backgroundColor?: string,
-    width?: string
+    width?: string;
 }
 
 const XButton = ({
