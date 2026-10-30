@@ -1,28 +1,47 @@
-import { colors } from "@/themes/colors";
-import { Stack } from "expo-router";
-import { StatusBar } from "react-native";
+import { AuthProvider, useAuth } from '@/context/AuthContext'
+import { colors } from '@/themes/colors'
+import { Stack } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
+import { useEffect } from 'react'
+import { StatusBar } from 'react-native'
+import { KeyboardProvider } from 'react-native-keyboard-controller'
 
-import { KeyboardProvider } from 'react-native-keyboard-controller';
+SplashScreen.preventAutoHideAsync()
+
+const RootNavigator = () => {
+  const { user, loading } = useAuth()
+
+  useEffect(() => {
+    if (!loading) SplashScreen.hideAsync()
+  }, [loading])
+
+  if (loading) return null
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
+      <Stack.Protected guard={user !== null}>
+        <Stack.Screen name='(protected)' />
+      </Stack.Protected>
+
+      <Stack.Protected guard={user===null}>
+        <Stack.Screen name='(auth)' />
+      </Stack.Protected>
+    </Stack>
+  )
+}
 
 export default function RootLayout() {
   return (
     <KeyboardProvider>
-    <StatusBar barStyle="dark-content" />
-      <Stack 
-        screenOptions={
-          {
-            headerShown: false,
-            contentStyle: {
-              backgroundColor: colors.background,
-            }
-          }
-        }
-      >
-        <Stack.Screen name="(auth)/login" />
-        <Stack.Screen name="(auth)/register" />
-        <Stack.Screen name="(auth)/forgot" />
-        <Stack.Screen name="(protected)" />
-      </Stack>
+      <StatusBar barStyle='dark-content' />
+      <AuthProvider> 
+        <RootNavigator />
+      </AuthProvider>
     </KeyboardProvider>
   )
 }

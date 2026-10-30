@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
         gap: 16
     },
     content: {
+        backgroundColor: colors.background,
         flexGrow: 1,
         //padding: 24,
         gap: 16,

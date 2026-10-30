@@ -5,6 +5,8 @@ import XRow from '@/components/XRow'
 import XScreen from '@/components/XScreen'
 import XSpace from '@/components/XSpace'
 import XText from '@/components/XText'
+import { useAuth } from '@/context/AuthContext'
+import { getAuthErrorMessage } from '@/lib/authErrors'
 import { colors } from '@/themes/colors'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
@@ -17,21 +19,33 @@ const Register = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const handleRegister = () => {
+  const { register } = useAuth()
+
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleRegister = async () => {
     if (!name.trim() || !email.trim() || !password || !confirmPassword) {
       Alert.alert('Erreur', 'Veuillez remplir tous les champs.')
       return
     }
-    if (password.length < 8) {
-      Alert.alert('Erreur', 'Le mot de passe doit contenir au moins 8 caractères.')
+    if (password.length < 6) {
+      Alert.alert('Erreur', 'Le mot de passe doit contenir au moins 6 caractères.')
       return
     }
     if (password !== confirmPassword) {
       Alert.alert('Erreur', 'Les mots de passe ne correspondent pas.')
       return
     }
-    // TODO: appeler votre API d'inscription
-    console.log({ name, email, password })
+
+    try {
+      setSubmitting(true)
+      await register(name, email, password)
+      // Pas de router.replace : Stack.Protected redirige automatiquement
+    } catch (error: any) {
+      Alert.alert('Inscription impossible', getAuthErrorMessage(error?.code))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -48,6 +62,7 @@ const Register = () => {
           resizeMode='contain'
         />
       </XRow>
+      <XSpace height={8} />
 
       <XColumn alignItems='flex-start'>
         <XText fontSize={32} fontWeight='900'>

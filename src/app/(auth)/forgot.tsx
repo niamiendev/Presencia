@@ -5,6 +5,8 @@ import XRow from '@/components/XRow'
 import XScreen from '@/components/XScreen'
 import XSpace from '@/components/XSpace'
 import XText from '@/components/XText'
+import { useAuth } from '@/context/AuthContext'
+import { getAuthErrorMessage } from '@/lib/authErrors'
 import { colors } from '@/themes/colors'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
@@ -12,19 +14,30 @@ import { Alert, Image, StyleSheet } from 'react-native'
 
 const ForgotPassword = () => {
   const router = useRouter()
-  const [email, setEmail] = useState('')
+  const { resetPassword } = useAuth()
 
-  const handleSubmit = () => {
+  const [email, setEmail] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleSubmit = async () => {
     if (!email.trim()) {
       Alert.alert('Erreur', 'Veuillez saisir votre adresse e-mail.')
       return
     }
-    // TODO: appeler votre API pour envoyer le lien de réinitialisation
-    console.log({ email })
-    Alert.alert(
-      'E-mail envoyé',
-      'Si un compte existe avec cette adresse, vous recevrez un lien de réinitialisation.'
-    )
+
+    try {
+      setSubmitting(true)
+      await resetPassword(email)
+      Alert.alert(
+        'E-mail envoyé',
+        'Si un compte existe avec cette adresse, vous recevrez un lien de réinitialisation. Pensez à vérifier vos spams.',
+        [{ text: 'OK', onPress: () => router.back() }]
+      )
+    } catch (error: any) {
+      Alert.alert('Erreur', getAuthErrorMessage(error?.code))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -41,6 +54,7 @@ const ForgotPassword = () => {
           resizeMode='contain'
         />
       </XRow>
+      <XSpace height={8} />
 
       <XColumn alignItems='flex-start'>
         <XText fontSize={32} fontWeight='900'>

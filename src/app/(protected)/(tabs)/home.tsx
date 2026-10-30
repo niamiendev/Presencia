@@ -4,6 +4,7 @@ import XRow from '@/components/XRow'
 import XScreen from '@/components/XScreen'
 import XSpace from '@/components/XSpace'
 import XText from '@/components/XText'
+import { useAuth } from '@/context/AuthContext'
 import { colors } from '@/themes/colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useRouter } from 'expo-router'
@@ -13,9 +14,16 @@ const HomeScreen = () => {
 
   const router = useRouter()
   const now = new Date().toLocaleTimeString('fr-FR', {
-  hour: '2-digit',
-  minute: '2-digit',
-})
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+  const date = new Date().toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+  const { user, loading } = useAuth()
 
 
   return (
@@ -33,8 +41,8 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </XRow>
       <XColumn alignItems='flex-start' gap={8}>
-        <XText fontSize={24} fontWeight={"bold"}>Bonjour, Marie</XText>
-        <XText color={colors.textSecondary}>Lundi 14 avril 2025</XText>
+        <XText fontSize={24} fontWeight={"bold"}>Bonjour, {user?.displayName}</XText>
+        <XText color={colors.textSecondary}>{date}</XText>
       </XColumn>
       <XSpace height={8} />
       <XText fontSize={48} fontWeight={"800"} textAlign='center' >{now}</XText>
@@ -47,7 +55,7 @@ const HomeScreen = () => {
         </XColumn>
       </XRow>
       <XSpace height={8} />
-      <XButton>
+      <XButton >
         <XRow gap={8}>
           <Ionicons name='scan' size={18} color={colors.card} />
           <XText color={colors.card} >Scanner pour pointer</XText>

@@ -5,24 +5,38 @@ import XRow from '@/components/XRow'
 import XScreen from '@/components/XScreen'
 import XSpace from '@/components/XSpace'
 import XText from '@/components/XText'
+import { useAuth } from '@/context/AuthContext'
 import { colors } from '@/themes/colors'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { Image, StyleSheet } from 'react-native'
+import { Alert, Image, StyleSheet } from 'react-native'
 
 const Login = () => {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = () => {
-    
-    console.log({ email, password })
-    router.replace("/(protected)/(tabs)/home")
+  const { login} = useAuth()
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleLogin = async () => {
+    if (!email.trim() || !password) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs.')
+      return
+    }
+    try {
+      setSubmitting(true)
+      await login(email, password)
+      // Pas de router.replace : Stack.Protected redirige automatiquement
+    } catch (error: any) {
+      Alert.alert('Connexion impossible', getAuthErrorMessage(error.code))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
-    <XScreen style = { styles.container}>
+    <XScreen style={styles.container}>
       <XRow gap={24} justifyContent='center'>
         <Image
           source={require('@/assets/images/logo.png')}
@@ -35,6 +49,7 @@ const Login = () => {
           resizeMode='contain'
         />
       </XRow>
+      <XSpace height={8} />
 
       <XColumn alignItems='flex-start'>
         <XText fontSize={32} fontWeight='900'>
@@ -95,9 +110,13 @@ export default Login
 
 const styles = StyleSheet.create(
   {
-    container:{
-      justifyContent:"center",
+    container: {
+      justifyContent: "center",
       //alignItems:"center"
     }
   }
 )
+
+function getAuthErrorMessage(code: any): string | null | undefined {
+  throw new Error('Function not implemented.')
+}
