@@ -1,5 +1,4 @@
 import { AuthProvider, useAuth } from '@/context/AuthContext'
-import { colors } from '@/themes/colors'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
@@ -20,8 +19,7 @@ const RootNavigator = () => {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: colors.background },
+        headerShown: false
       }}
     >
       <Stack.Protected guard={user !== null}>

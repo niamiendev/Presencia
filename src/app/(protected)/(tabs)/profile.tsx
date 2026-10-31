@@ -11,6 +11,7 @@ import { Alert, Image, StyleSheet, TouchableOpacity } from 'react-native'
 
 
 const ProfileScreen = () => {
+
   const router = useRouter()
   const { logout, user } = useAuth()
   const [image, setImage] = useState<string | null>(null);
@@ -70,9 +71,8 @@ const ProfileScreen = () => {
 
       </XColumn>
 
-
       <XButton backgroundColor={colors.error} onPress={handlelogout}>
-        <XText color={colors.card}>Se déconnecter</XText>
+        <XText color={colors.background}>Se déconnecter</XText>
       </XButton>
     </XScreen>
   )
@@ -80,7 +80,7 @@ const ProfileScreen = () => {
 
 export default ProfileScreen
 
-const size = 80
+const size = 100
 
 const styles = StyleSheet.create({
   avatar: {

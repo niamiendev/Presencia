@@ -19,7 +19,7 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="home"
         options={{
-          title: 'Profil',
+          title: 'Accueil',
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons name={
               focused ? "home" : "home-outline"
@@ -28,18 +28,9 @@ export default function TabsLayout() {
             />
           ),
         }} />
-      <Tabs.Screen name="scanner" options={{
-          title: 'Profil',
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons name={
-              focused ? "scan" : "scan-outline"
-            }
-              color={color as string} size={size}
-            />
-          ),
-        }} />
+   
       <Tabs.Screen name="historic" options={{
-          title: 'Profil',
+          title: 'Historique',
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons name={
               focused ? "time" : "time-outline"

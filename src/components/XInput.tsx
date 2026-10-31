@@ -11,7 +11,7 @@ type Props = TextInputProps & {
 
 const XInput = ({
     icon = 'mail-outline',
-    iconColor = colors.info,
+    iconColor = colors.textSecondary,
     iconSize = 24,
     style,
     ...rest
@@ -20,7 +20,7 @@ const XInput = ({
         <XRow style={styles.container}>
             <Ionicons name={icon} size={iconSize} color={iconColor} />
             <TextInput
-                placeholderTextColor={colors.info}
+                placeholderTextColor={colors.textSecondary}
                 {...rest}
                 style={[styles.input, style]}
             />

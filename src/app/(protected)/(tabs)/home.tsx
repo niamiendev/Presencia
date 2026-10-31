@@ -55,10 +55,10 @@ const HomeScreen = () => {
         </XColumn>
       </XRow>
       <XSpace height={8} />
-      <XButton >
+      <XButton onPress={ () => router.navigate("/(protected)/scanner")} >
         <XRow gap={8}>
-          <Ionicons name='scan' size={18} color={colors.card} />
-          <XText color={colors.card} >Scanner pour pointer</XText>
+          <Ionicons name='scan' size={18} color={colors.background} />
+          <XText color={colors.background} >Scanner pour pointer</XText>
         </XRow>
       </XButton>
       <XSpace height={18} />
