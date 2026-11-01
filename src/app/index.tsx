@@ -16,7 +16,7 @@ export default function Index() {
     if (loading) return
 
     const timer = setTimeout(() => {
-      router.replace(user ? '/(protected)/(tabs)/home' : '/(auth)/login')
+      //router.replace(user ? '/(protected)/(tabs)/home' : '/(auth)/login')
     }, 2000)
 
     return () => clearTimeout(timer)

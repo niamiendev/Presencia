@@ -41,8 +41,7 @@ export const AuthProvider = ({ children }: Props) => {
       await signInWithEmailAndPassword(auth, email.trim(), password)
 
     } catch (error) {
-      
-    }finally{
+      throw new Error(`${error}`);
     }
   }
 
@@ -53,8 +52,7 @@ export const AuthProvider = ({ children }: Props) => {
 
       setUser({ ...cred.user })
     } catch (error) {
-      
-    }finally{
+      throw new Error(`${error}`);
     }
   }
 
@@ -62,8 +60,7 @@ export const AuthProvider = ({ children }: Props) => {
     try {
       await sendPasswordResetEmail(auth, email.trim())
     } catch (error) {
-      
-    }finally{
+      throw new Error(`${error}`);
     }
   }
 
@@ -72,8 +69,7 @@ export const AuthProvider = ({ children }: Props) => {
       await signOut(auth)
       
     } catch (error) {
-      
-    }finally{
+      throw new Error(`${error}`);
     }
   }
 
