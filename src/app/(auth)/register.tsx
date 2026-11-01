@@ -20,6 +20,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState("")
   const { register } = useAuth()
+  const [loading, setLoading] = useState(false)
 
   const [submitting, setSubmitting] = useState(false)
 
@@ -39,13 +40,14 @@ const Register = () => {
 
     try {
       setSubmitting(true)
+      setLoading(true)
       await register(name, email, password)
-      // Pas de router.replace : Stack.Protected redirige automatiquement
     } catch (error: any) {
       setError((error as Error).message)
       Alert.alert('Inscription impossible', getAuthErrorMessage(error?.code))
     } finally {
       setSubmitting(false)
+      setLoading(false)
     }
   }
 
@@ -121,7 +123,7 @@ const Register = () => {
           <XSpace height={24} />
           {error ? <XText color={colors.error}>{error}</XText> : null}
 
-          <XButton onPress={handleRegister}>
+          <XButton loading={loading} onPress={handleRegister}>
             <XText color={colors.background}>S'inscrire</XText>
           </XButton>
 

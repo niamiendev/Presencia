@@ -1,20 +1,23 @@
 
 import { colors } from '@/themes/colors';
 import {
+    ActivityIndicator,
     StyleSheet,
     TouchableOpacity,
     type TouchableOpacityProps,
 } from 'react-native';
 
 type Props = TouchableOpacityProps & {
-    backgroundColor?: string,
+    backgroundColor?: string;
     width?: string;
+    loading?: boolean
 }
 
 const XButton = ({
     backgroundColor = colors.primary,
     width,
     children,
+    loading = false,
     style,
     ...rest
 }: Props) => {
@@ -27,7 +30,13 @@ const XButton = ({
                 style,
             ]}
         >
-            {children}
+            {
+                loading ?
+                    <ActivityIndicator color={colors.background} />
+                    :
+                    children
+            }
+
         </TouchableOpacity>
     )
 }
@@ -39,6 +48,6 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 16,
         //justifyContent:"center",
-        alignItems:"center"
+        alignItems: "center"
     },
 })

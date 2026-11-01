@@ -19,6 +19,8 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -28,17 +30,20 @@ const ForgotPassword = () => {
 
     try {
       setSubmitting(true)
+      setLoading(true)
       await resetPassword(email)
       Alert.alert(
         'E-mail envoyé',
         'Si un compte existe avec cette adresse, vous recevrez un lien de réinitialisation. Pensez à vérifier vos spams.',
         [{ text: 'OK', onPress: () => router.back() }]
       )
+      
     } catch (error: any) {
       setError((error as Error).message)
       Alert.alert('Erreur', getAuthErrorMessage(error?.code))
     } finally {
       setSubmitting(false)
+      setLoading(false)
     }
   }
 
@@ -88,7 +93,7 @@ const ForgotPassword = () => {
           <XSpace height={24} />
           {error ? <XText color={colors.error}>{error}</XText> : null}
 
-          <XButton onPress={handleSubmit}>
+          <XButton loading={loading} onPress={handleSubmit}>
             <XText color={colors.background}>Envoyer le lien</XText>
           </XButton>
 

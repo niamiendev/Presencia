@@ -17,6 +17,7 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const { login } = useAuth()
   const [submitting, setSubmitting] = useState(false)
@@ -28,13 +29,14 @@ const Login = () => {
     }
     try {
       setSubmitting(true)
+      setLoading(true)
       await login(email, password)
-      // Pas de router.replace : Stack.Protected redirige automatiquement
     } catch (error: any) {
       setError((error as Error).message)
       Alert.alert('Connexion impossible', getAuthErrorMessage(error.code))
     } finally {
       setSubmitting(false)
+      setLoading(false)
     }
   }
 
@@ -100,7 +102,7 @@ const Login = () => {
           <XSpace height={24} />
           {error ? <XText color={colors.error}>{error}</XText> : null}
 
-          <XButton width='100%' onPress={handleLogin}  >
+          <XButton loading={loading} width='100%' onPress={handleLogin}  >
             <XText color={colors.background}>Se connecter</XText>
           </XButton>
 
