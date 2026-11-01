@@ -6,6 +6,7 @@ import XText from '@/components/XText'
 import { useAuth } from '@/context/AuthContext'
 import { colors } from '@/themes/colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import {
   ActivityIndicator,
@@ -21,6 +22,8 @@ const ProfileScreen = () => {
   const { logout, user, photoURL, updatePhoto } = useAuth()
   const [sheetVisible, setSheetVisible] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const { role } = useAuth()
+  const router = useRouter()
 
   const handlePick = async (uri: string) => {
     setUploading(true)
@@ -70,6 +73,18 @@ const ProfileScreen = () => {
           <XText color={colors.textSecondary}>{user?.email}</XText>
         </XColumn>
 
+
+        {role === 'admin' && (
+          <XButton onPress={() => router.push('/(protected)/admin')}>
+            <XText color={colors.background}>Gérer les sites</XText>
+          </XButton>
+        )}
+        {role === 'admin' && (
+        <XButton onPress={() => router.push('/(protected)/admin/history')}>
+          <XText color={colors.background}>Voir les pointages</XText>
+        </XButton>
+        )}
+
         <XButton backgroundColor={colors.error} onPress={handleLogout}>
           <XText color={colors.background}>Se déconnecter</XText>
         </XButton>
@@ -102,3 +117,4 @@ const styles = StyleSheet.create({
     height: SIZE,
   },
 })
+

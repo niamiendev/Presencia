@@ -1,5 +1,5 @@
 import { getAuthErrorMessage } from '@/lib/authErrors'
-import { auth, storage } from '@/lib/firebase'
+import { auth, db, storage } from '@/lib/firebase'
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -9,11 +9,15 @@ import {
   updateProfile,
   User,
 } from 'firebase/auth'
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react'
+
+export type Role = 'employee' | 'admin'
 
 type AuthContextType = {
   user: User | null
+  role: Role | null
   photoURL: string | null
   loading: boolean
   login: (email: string, password: string) => Promise<void>
@@ -27,16 +31,56 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 type Props = { children: ReactNode }
 
+// Lit le rôle ; crée le document s'il n'existe pas (comptes créés avant cette étape)
+const fetchOrCreateRole = async (user: User): Promise<Role> => {
+  const userRef = doc(db, 'users', user.uid)
+  const snap = await getDoc(userRef)
+
+  if (snap.exists()) {
+    return (snap.data().role as Role) ?? 'employee'
+  }
+
+  await setDoc(userRef, {
+    uid: user.uid,
+    name: user.displayName ?? '',
+    email: user.email ?? '',
+    role: 'employee',
+    createdAt: serverTimestamp(),
+  })
+  return 'employee'
+}
+
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null)
+  const [role, setRole] = useState<Role | null>(null)
   const [photoURL, setPhotoURL] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Empêche l'écouteur de créer le document pendant register()
+  const registering = useRef(false)
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser)
       setPhotoURL(currentUser?.photoURL ?? null)
-      setLoading(false)
+
+      if (!currentUser) {
+        setRole(null)
+        setLoading(false)
+        return
+      }
+
+      // register() s'occupe lui-même du document et du rôle
+      if (registering.current) return
+
+      try {
+        setRole(await fetchOrCreateRole(currentUser))
+      } catch (e) {
+        console.error('fetchOrCreateRole error:', e)
+        setRole('employee')
+      } finally {
+        setLoading(false)
+      }
     })
     return unsubscribe
   }, [])
@@ -50,12 +94,27 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   const register = async (name: string, email: string, password: string) => {
+    registering.current = true
     try {
       const cred = await createUserWithEmailAndPassword(auth, email.trim(), password)
       await updateProfile(cred.user, { displayName: name.trim() })
+
+      // Le rôle est toujours "employee" à l'inscription (imposé aussi par les règles Firestore)
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        uid: cred.user.uid,
+        name: name.trim(),
+        email: email.trim(),
+        role: 'employee',
+        createdAt: serverTimestamp(),
+      })
+
+      setRole('employee')
       setUser({ ...cred.user })
     } catch (error) {
       throw new Error(getAuthErrorMessage(error))
+    } finally {
+      registering.current = false
+      setLoading(false)
     }
   }
 
@@ -72,7 +131,6 @@ export const AuthProvider = ({ children }: Props) => {
     if (!currentUser) throw new Error('Utilisateur non connecté.')
 
     try {
-      // Lecture du fichier local en Blob (méthode fiable en React Native)
       const blob: Blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
         xhr.onload = () => resolve(xhr.response)
@@ -94,7 +152,6 @@ export const AuthProvider = ({ children }: Props) => {
     }
   }
 
-
   const logout = async () => {
     try {
       await signOut(auth)
@@ -105,7 +162,7 @@ export const AuthProvider = ({ children }: Props) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, photoURL, loading, login, register, resetPassword, updatePhoto, logout }}
+      value={{ user, role, photoURL, loading, login, register, resetPassword, updatePhoto, logout }}
     >
       {children}
     </AuthContext.Provider>

@@ -4,11 +4,11 @@
     "slug": "Presencia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "/assets/logo.png",
     "scheme": "presencia",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "/assets/expo.icon"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
     },
     "web": {
       "output": "server",
-      "favicon": "./assets/logo.png"
+      "favicon": "/assets/icon.png"
     },
     "plugins": [
       "expo-router",
@@ -26,7 +26,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#208AEF",
-          "image": "./assets/logo.png",
+          "image": "/assets/logo.png",
           "imageWidth": 76
         }
       ],
@@ -46,7 +46,14 @@
           }
         }
       ],
-      "expo-image"
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "La position sert à enregistrer l'emplacement du site."
+        }
+      ],
+      "expo-image",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,
