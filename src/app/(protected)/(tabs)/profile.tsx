@@ -1,98 +1,104 @@
 import XButton from '@/components/XButton'
 import XColumn from '@/components/XColumn'
+import XPhotoSheet from '@/components/XPhotoSheet'
 import XScreen from '@/components/XScreen'
 import XText from '@/components/XText'
 import { useAuth } from '@/context/AuthContext'
 import { colors } from '@/themes/colors'
-import * as ImagePicker from 'expo-image-picker'
-import { useRouter } from 'expo-router'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import { useState } from 'react'
-import { Alert, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native'
 
+const SIZE = 120
 
 const ProfileScreen = () => {
+  const { logout, user, photoURL, updatePhoto } = useAuth()
+  const [sheetVisible, setSheetVisible] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
-  const router = useRouter()
-  const { logout, user } = useAuth()
-  const [image, setImage] = useState<string | null>(null);
-
-  const pickImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      Alert.alert('Permission required', 'Permission to access the media library is required.');
-      return;
+  const handlePick = async (uri: string) => {
+    setUploading(true)
+    try {
+      await updatePhoto(uri)
+    } catch (e) {
+      Alert.alert('Erreur', (e as Error).message)
+    } finally {
+      setUploading(false)
     }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images', 'videos'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const takePhoto = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      Alert.alert('Permission required', 'Permission to access the camera is required.');
-      return;
-    }
-
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-
-  const handlelogout = () => {
-    logout()
   }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (e) {
+      Alert.alert('Erreur', (e as Error).message)
+    }
+  }
+
   return (
-    <XScreen>
-      <TouchableOpacity onPress={pickImage} style={styles.avatar}>
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-      </TouchableOpacity>
-      <XColumn>
+    <>
+      <XScreen>
+        <TouchableOpacity
+          onPress={() => setSheetVisible(true)}
+          style={styles.avatar}
+          disabled={uploading}
+          activeOpacity={0.8}
+        >
+          {uploading ? (
+            <ActivityIndicator color={colors.primary} />
+          ) : photoURL ? (
+            <Image
+              key={photoURL}
+              source={{ uri: photoURL }}
+              style={styles.image}
+            />
+          ) : (
+            <Ionicons name="camera" size={32} color={colors.primary} />
+          )}
+        </TouchableOpacity>
 
-        <XText fontSize={18} fontWeight={"600"}>{user && user.displayName}</XText>
-        <XText color={colors.textSecondary}>{user && user.email}</XText>
+        <XColumn alignItems="center">
+          <XText fontSize={18} fontWeight="600">
+            {user?.displayName}
+          </XText>
+          <XText color={colors.textSecondary}>{user?.email}</XText>
+        </XColumn>
 
-      </XColumn>
+        <XButton backgroundColor={colors.error} onPress={handleLogout}>
+          <XText color={colors.background}>Se déconnecter</XText>
+        </XButton>
+      </XScreen>
 
-      <XButton backgroundColor={colors.error} onPress={handlelogout}>
-        <XText color={colors.background}>Se déconnecter</XText>
-      </XButton>
-    </XScreen>
+      <XPhotoSheet
+        visible={sheetVisible}
+        onClose={() => setSheetVisible(false)}
+        onPick={handlePick}
+      />
+    </>
   )
 }
 
 export default ProfileScreen
 
-const size = 100
-
 const styles = StyleSheet.create({
   avatar: {
     backgroundColor: colors.textSecondary,
-    width: size,
-    height: size,
-    borderRadius: "50%",
-    alignSelf: "center"
+    width: SIZE,
+    height: SIZE,
+    borderRadius: SIZE / 2,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
   },
   image: {
-    width: size,
-    height: size,
-    borderRadius: "50%",
+    width: SIZE,
+    height: SIZE,
   },
 })

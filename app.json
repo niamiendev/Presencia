@@ -34,7 +34,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "L'application accède à vos photos pour que vous puissiez choisir une image.",
+          "photosPermission": "L'application a besoin d'accéder à vos photos.",
+          "cameraPermission": "L'application a besoin d'accéder à votre caméra.",
           "colors": {
             "cropToolbarColor": "#000000"
           },

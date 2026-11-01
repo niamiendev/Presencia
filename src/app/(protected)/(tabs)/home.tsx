@@ -23,7 +23,7 @@ const HomeScreen = () => {
     month: 'long',
     year: 'numeric',
   })
-  const { user, loading } = useAuth()
+  const { user, photoURL } = useAuth()
 
 
   return (
@@ -31,11 +31,22 @@ const HomeScreen = () => {
       <XRow justifyContent='space-between' >
         <Image
           source={require('@/assets/images/icon.png')}
-          
+
           resizeMode='contain'
         />
         <TouchableOpacity onPress={() => router.navigate("/(protected)/(tabs)/profile")} >
-          <Ionicons name='person-outline' size={24} />
+          {
+            photoURL !== null ? (
+              <Image
+                key={photoURL}
+                source={{ uri: photoURL }}
+                style={styles.image}
+              />
+            ) : (
+              <Ionicons name='person-outline' size={24} />
+
+            )
+          }
         </TouchableOpacity>
       </XRow>
       <XColumn alignItems='flex-start' gap={8}>
@@ -53,7 +64,7 @@ const HomeScreen = () => {
         </XColumn>
       </XRow>
       <XSpace height={8} />
-      <XButton onPress={ () => router.navigate("/(protected)/scanner")} >
+      <XButton onPress={() => router.navigate("/(protected)/scanner")} >
         <XRow gap={8}>
           <Ionicons name='scan' size={18} color={colors.background} />
           <XText color={colors.background} >Scanner pour pointer</XText>
@@ -70,11 +81,17 @@ const HomeScreen = () => {
 
 export default HomeScreen
 
+const SIZE = 52
 const styles = StyleSheet.create({
   card: {
     alignItems: "flex-start",
     backgroundColor: colors.info,
     padding: 16,
     borderRadius: 16
-  }
+  },
+  image: {
+    width: SIZE,
+    height: SIZE,
+    borderRadius:32
+  },
 })
