@@ -15,7 +15,7 @@ export default function ProtectedLayout() {
     >
       <Stack.Screen name="confirm" />
       <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="scan" />
+      <Stack.Screen name="scanner" />
       <Stack.Screen name="details/[id]" />
     </Stack>
   )
