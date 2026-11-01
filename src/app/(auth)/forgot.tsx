@@ -10,7 +10,7 @@ import { getAuthErrorMessage } from '@/lib/authErrors'
 import { colors } from '@/themes/colors'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { Alert, Image, StyleSheet } from 'react-native'
+import { Alert, Image, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 
 const ForgotPassword = () => {
   const router = useRouter()
@@ -18,6 +18,7 @@ const ForgotPassword = () => {
 
   const [email, setEmail] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -34,6 +35,7 @@ const ForgotPassword = () => {
         [{ text: 'OK', onPress: () => router.back() }]
       )
     } catch (error: any) {
+      setError((error as Error).message)
       Alert.alert('Erreur', getAuthErrorMessage(error?.code))
     } finally {
       setSubmitting(false)
@@ -41,56 +43,65 @@ const ForgotPassword = () => {
   }
 
   return (
-    <XScreen style = { styles.container}>
-      <XRow gap={24} justifyContent='center'>
-        <Image
-          source={require('@/assets/images/logo.png')}
-          style={{ width: 50 }}
-          resizeMode='contain'
-        />
-        <Image
-          source={require('@/assets/images/text.png')}
-          style={{ width: 150 }}
-          resizeMode='contain'
-        />
-      </XRow>
-      <XSpace height={8} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-      <XColumn alignItems='flex-start'>
-        <XText fontSize={32} fontWeight='900'>
-          Mot de passe oublié ?
-        </XText>
-        <XText fontSize={16} fontWeight='600' color={colors.textSecondary}>
-          Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation
-        </XText>
-      </XColumn>
+      <XScreen edges={[]}
+        paddingHorizontal={0}>
+        <View style={styles.content}>
 
-      <XColumn>
-        <XInput
-          icon='mail-outline'
-          placeholder='Adresse e-mail'
-          value={email}
-          onChangeText={setEmail}
-          keyboardType='email-address'
-          autoCapitalize='none'
-          autoComplete='email'
-        />
-      </XColumn>
+          <XRow gap={24} justifyContent='center'>
+            <Image
+              source={require('@/assets/images/logo.png')}
+              style={{ width: 50 }}
+              resizeMode='contain'
+            />
+            <Image
+              source={require('@/assets/images/text.png')}
+              style={{ width: 150 }}
+              resizeMode='contain'
+            />
+          </XRow>
+          <XSpace height={8} />
 
-      <XSpace height={24} />
+          <XColumn alignItems='flex-start'>
+            <XText fontSize={32} fontWeight='900'>
+              Mot de passe oublié ?
+            </XText>
+            <XText fontSize={16} fontWeight='600' color={colors.textSecondary}>
+              Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation
+            </XText>
+          </XColumn>
 
-      <XButton onPress={handleSubmit}>
-        <XText color={colors.background}>Envoyer le lien</XText>
-      </XButton>
 
-      <XText
-        color={colors.primary}
-        textAlign='center'
-        onPress={() => router.back()}
-      >
-        Retour à la connexion
-      </XText>
-    </XScreen>
+          <XColumn>
+            <XInput
+              icon='mail-outline'
+              placeholder='Adresse e-mail'
+              value={email}
+              onChangeText={setEmail}
+              keyboardType='email-address'
+              autoCapitalize='none'
+              autoComplete='email'
+            />
+          </XColumn>
+
+          <XSpace height={24} />
+          {error ? <XText color={colors.error}>{error}</XText> : null}
+
+          <XButton onPress={handleSubmit}>
+            <XText color={colors.background}>Envoyer le lien</XText>
+          </XButton>
+
+          <XText
+            color={colors.primary}
+            textAlign='center'
+            onPress={() => router.back()}
+          >
+            Retour à la connexion
+          </XText>
+        </View>
+      </XScreen>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -98,9 +109,15 @@ export default ForgotPassword
 
 const styles = StyleSheet.create(
   {
-    container:{
-      justifyContent:"center",
-      //alignItems:"center"
+    content: {
+      flex: 1,
+      justifyContent: 'center',
+      gap: 24,
+      zIndex: 1,
+      paddingHorizontal: 16
+    },
+    container: {
+      justifyContent: "center",
     }
   }
 )

@@ -10,7 +10,7 @@ import { getAuthErrorMessage } from '@/lib/authErrors'
 import { colors } from '@/themes/colors'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { Alert, Image, StyleSheet } from 'react-native'
+import { Alert, Image, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 
 const Register = () => {
   const router = useRouter()
@@ -18,7 +18,7 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-
+  const [error, setError] = useState("")
   const { register } = useAuth()
 
   const [submitting, setSubmitting] = useState(false)
@@ -42,6 +42,7 @@ const Register = () => {
       await register(name, email, password)
       // Pas de router.replace : Stack.Protected redirige automatiquement
     } catch (error: any) {
+      setError((error as Error).message)
       Alert.alert('Inscription impossible', getAuthErrorMessage(error?.code))
     } finally {
       setSubmitting(false)
@@ -49,82 +50,91 @@ const Register = () => {
   }
 
   return (
-    <XScreen style = { styles.container}>
-      <XRow gap={24} justifyContent='center'>
-        <Image
-          source={require('@/assets/images/logo.png')}
-          style={{ width: 50 }}
-          resizeMode='contain'
-        />
-        <Image
-          source={require('@/assets/images/text.png')}
-          style={{ width: 150 }}
-          resizeMode='contain'
-        />
-      </XRow>
-      <XSpace height={8} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-      <XColumn alignItems='flex-start'>
-        <XText fontSize={32} fontWeight='900'>
-          Créer un compte
-        </XText>
-        <XText fontSize={16} fontWeight='600' color={colors.textSecondary}>
-          Inscrivez-vous pour gérer votre présence
-        </XText>
-      </XColumn>
-
-      <XColumn gap={16}>
-        <XInput
-          icon='person-outline'
-          placeholder='Nom complet'
-          value={name}
-          onChangeText={setName}
-          autoCapitalize='words'
-          autoComplete='name'
-        />
-        <XInput
-          icon='mail-outline'
-          placeholder='Adresse e-mail'
-          value={email}
-          onChangeText={setEmail}
-          keyboardType='email-address'
-          autoCapitalize='none'
-          autoComplete='email'
-        />
-        <XInput
-          icon='lock-closed-outline'
-          placeholder='Mot de passe'
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoCapitalize='none'
-          autoComplete='new-password'
-        />
-        <XInput
-          icon='lock-closed-outline'
-          placeholder='Confirmer le mot de passe'
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-          autoCapitalize='none'
-          autoComplete='new-password'
-        />
-      </XColumn>
-
-      <XSpace height={24} />
-
-      <XButton onPress={handleRegister}>
-        <XText color={colors.background}>S'inscrire</XText>
-      </XButton>
-
-      <XText
-        color={colors.primary}
-        textAlign='center'
-        onPress={() => router.back()}
+      <XScreen edges={[]}
+        paddingHorizontal={0}
       >
-        Déjà un compte ? Se connecter
-      </XText>
-    </XScreen>
+        <View style={styles.content}>
+
+          <XRow gap={24} justifyContent='center'>
+            <Image
+              source={require('@/assets/images/logo.png')}
+              style={{ width: 50 }}
+              resizeMode='contain'
+            />
+            <Image
+              source={require('@/assets/images/text.png')}
+              style={{ width: 150 }}
+              resizeMode='contain'
+            />
+          </XRow>
+          <XSpace height={8} />
+
+          <XColumn alignItems='flex-start'>
+            <XText fontSize={32} fontWeight='900'>
+              Créer un compte
+            </XText>
+            <XText fontSize={16} fontWeight='600' color={colors.textSecondary}>
+              Inscrivez-vous pour gérer votre présence
+            </XText>
+          </XColumn>
+
+          <XColumn gap={16}>
+            <XInput
+              icon='person-outline'
+              placeholder='Nom complet'
+              value={name}
+              onChangeText={setName}
+              autoCapitalize='words'
+              autoComplete='name'
+            />
+            <XInput
+              icon='mail-outline'
+              placeholder='Adresse e-mail'
+              value={email}
+              onChangeText={setEmail}
+              keyboardType='email-address'
+              autoCapitalize='none'
+              autoComplete='email'
+            />
+            <XInput
+              icon='lock-closed-outline'
+              placeholder='Mot de passe'
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoCapitalize='none'
+              autoComplete='new-password'
+            />
+            <XInput
+              icon='lock-closed-outline'
+              placeholder='Confirmer le mot de passe'
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+              autoCapitalize='none'
+              autoComplete='new-password'
+            />
+          </XColumn>
+
+          <XSpace height={24} />
+          {error ? <XText color={colors.error}>{error}</XText> : null}
+
+          <XButton onPress={handleRegister}>
+            <XText color={colors.background}>S'inscrire</XText>
+          </XButton>
+
+          <XText
+            color={colors.primary}
+            textAlign='center'
+            onPress={() => router.back()}
+          >
+            Déjà un compte ? Se connecter
+          </XText>
+        </View>
+      </XScreen>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -132,9 +142,16 @@ export default Register
 
 const styles = StyleSheet.create(
   {
-    container:{
-      justifyContent:"center",
-      //alignItems:"center"
+
+    content: {
+      flex: 1,
+      justifyContent: 'center',
+      gap: 24,
+      zIndex: 1,
+      paddingHorizontal: 16
+    },
+    container: {
+      justifyContent: "center",
     }
   }
 )

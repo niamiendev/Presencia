@@ -1,13 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 
 const Scanner = () => {
   return (
-    <View>
-      <Text>Scanner</Text>
+    <View style = {styles.container}>
+      <Image
+        source={require('@/assets/images/design.png')}
+      />
     </View>
   )
 }
 
 export default Scanner
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container:{
+    justifyContent:"center",
+    alignItems:"center"
+  }
+})

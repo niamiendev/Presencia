@@ -1,4 +1,4 @@
-export const getAuthErrorMessage = (code?: string) => {
+export const getAuthErrorMessage = (code?: unknown) => {
   switch (code) {
     case 'auth/invalid-email':
       return 'Adresse e-mail invalide.'

@@ -28,14 +28,12 @@ const HomeScreen = () => {
 
   return (
     <XScreen>
-      <XRow gap={24} justifyContent='space-between' >
-
+      <XRow justifyContent='space-between' >
         <Image
-          source={require('@/assets/images/logo.png')}
-          style={{ width: 50 }}
+          source={require('@/assets/images/icon.png')}
+          
           resizeMode='contain'
         />
-
         <TouchableOpacity onPress={() => router.navigate("/(protected)/(tabs)/profile")} >
           <Ionicons name='person-outline' size={24} />
         </TouchableOpacity>

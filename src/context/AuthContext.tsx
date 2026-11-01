@@ -1,3 +1,4 @@
+import { getAuthErrorMessage } from '@/lib/authErrors'
 import { auth } from '@/lib/firebase'
 import {
   createUserWithEmailAndPassword,
@@ -26,6 +27,7 @@ type Props = { children: ReactNode }
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+ 
 
   // Écoute l'état de connexion (et restaure la session au démarrage)
   useEffect(() => {
@@ -41,7 +43,7 @@ export const AuthProvider = ({ children }: Props) => {
       await signInWithEmailAndPassword(auth, email.trim(), password)
 
     } catch (error) {
-      throw new Error(`${error}`);
+      throw new Error(getAuthErrorMessage(error))
     }
   }
 
@@ -52,7 +54,7 @@ export const AuthProvider = ({ children }: Props) => {
 
       setUser({ ...cred.user })
     } catch (error) {
-      throw new Error(`${error}`);
+      throw new Error(getAuthErrorMessage(error))
     }
   }
 
@@ -60,7 +62,7 @@ export const AuthProvider = ({ children }: Props) => {
     try {
       await sendPasswordResetEmail(auth, email.trim())
     } catch (error) {
-      throw new Error(`${error}`);
+      throw new Error(getAuthErrorMessage(error))
     }
   }
 
@@ -69,7 +71,7 @@ export const AuthProvider = ({ children }: Props) => {
       await signOut(auth)
       
     } catch (error) {
-      throw new Error(`${error}`);
+      throw new Error(getAuthErrorMessage(error))
     }
   }
 

@@ -1,11 +1,11 @@
 export const colors = {
-    primary:"#2563EB",
-    background:"#ffff",
-    text:"#172554",
-    card:"#f1efef1f",
+    primary:"#1d65f3",
+    background:"#fdfdff",
+    text:"#0E2458",
+    card:"#f1efef50",
     textSecondary:"#17255478",
-    info:"#d3edf5",
-    success:"#16A34A",
+    info:"#F2F6FB",
+    success:"#1da251",
     warning:"#F59E08",
     error:"#DC2626"
 }

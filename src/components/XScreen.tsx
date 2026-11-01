@@ -1,47 +1,52 @@
 import { colors } from '@/themes/colors'
-import { StyleSheet } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native'
 import { SafeAreaView, SafeAreaViewProps } from 'react-native-safe-area-context'
 
-const XScreen = ({ style, children, ...rest }: SafeAreaViewProps) => {
-    return (
-        <SafeAreaView
-            {...rest}
-            style={
-                [
-                    styles.container,
-                    {},
-                    style
-                ]
-            }
-        >
-            <KeyboardAwareScrollView
-                contentContainerStyle={[styles.content, style]}
-                keyboardShouldPersistTaps='handled'
-                showsVerticalScrollIndicator={false}
-                bottomOffset={24}
-            >
+type Props = SafeAreaViewProps & {
+  paddingHorizontal?: number
+}
 
-                {children}
-            </KeyboardAwareScrollView>
-        </SafeAreaView>
-    )
+const XScreen = ({
+  paddingHorizontal = 16,
+  style,
+  children,
+  ...rest
+}: Props) => {
+  return (
+    <SafeAreaView
+      {...rest}
+      style={[styles.container, { paddingHorizontal }, style]}
+    >
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+
+        <ScrollView
+          contentContainerStyle={[styles.content]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+
+    </SafeAreaView>
+  )
 }
 
 export default XScreen
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background,
-        paddingHorizontal: 16,
-        //paddingTop: Platform.OS === "android" ? 16 : 0,
-        //gap: 16
-    },
-    content: {
-        backgroundColor: colors.background,
-        flexGrow: 1,
-        //padding: 24,
-        gap: 16,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    paddingTop:Platform.OS === 'ios' ? 0 : 16
+  },
+  content: {
+    flexGrow: 1,
+    gap: 16,
+  },
+  
 })
